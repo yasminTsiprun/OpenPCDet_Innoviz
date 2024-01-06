@@ -195,6 +195,7 @@ class Detector3DTemplate(nn.Module):
         post_process_cfg = self.model_cfg.POST_PROCESSING
         batch_size = batch_dict['batch_size']
         recall_dict = {}
+        precision_dict = {}
         pred_dicts = []
         for index in range(batch_size):
             if batch_dict.get('batch_index', None) is not None:
@@ -273,6 +274,14 @@ class Detector3DTemplate(nn.Module):
                 recall_dict=recall_dict, batch_index=index, data_dict=batch_dict,
                 thresh_list=post_process_cfg.RECALL_THRESH_LIST
             )        
+            
+            #Yasmin:
+            precision_dict = self.generate_precision_record(
+                box_preds=final_boxes if 'rois' not in batch_dict else src_box_preds[selected],
+                box_preds_selected=final_boxes,
+                precision_dict=precision_dict, batch_index=index, data_dict=batch_dict,
+                thresh_list=post_process_cfg.RECALL_THRESH_LIST
+            )      
 
             record_dict = {
                 'pred_boxes': final_boxes,
@@ -281,7 +290,9 @@ class Detector3DTemplate(nn.Module):
             }
             pred_dicts.append(record_dict)
 
-        return pred_dicts, recall_dict
+        #return pred_dicts, recall_dict
+        #Yasmin: add precision calculation
+        return pred_dicts, recall_dict, precision_dict
 
     @staticmethod
     def generate_recall_record(box_preds, recall_dict, batch_index, data_dict=None, thresh_list=None):
@@ -296,6 +307,7 @@ class Detector3DTemplate(nn.Module):
             for cur_thresh in thresh_list:
                 recall_dict['roi_%s' % (str(cur_thresh))] = 0
                 recall_dict['rcnn_%s' % (str(cur_thresh))] = 0
+                
 
         cur_gt = gt_boxes
         k = cur_gt.__len__() - 1
@@ -326,6 +338,61 @@ class Detector3DTemplate(nn.Module):
         else:
             gt_iou = box_preds.new_zeros(box_preds.shape[0])
         return recall_dict
+    
+    @staticmethod #yasmin add precision calculation
+    def generate_precision_record(box_preds, box_preds_selected, precision_dict, batch_index, data_dict=None, thresh_list=None):
+        if 'gt_boxes' not in data_dict:
+            return precision_dict
+
+        rois = data_dict['rois'][batch_index] if 'rois' in data_dict else None
+        gt_boxes = data_dict['gt_boxes'][batch_index]
+
+        if precision_dict.__len__() == 0:
+            precision_dict = {'gt': 0}
+            for cur_thresh in thresh_list:
+                precision_dict['roi_%s' % (str(cur_thresh))] = 0
+                precision_dict['rcnn_%s' % (str(cur_thresh))] = 0
+                precision_dict['fp_rcnn_%s' % (str(cur_thresh))] = 0
+                if rois is not None:
+                    precision_dict['fp_roi_%s' % (str(cur_thresh))] = 0
+                
+
+        cur_gt = gt_boxes
+        k = cur_gt.__len__() - 1
+        while k >= 0 and cur_gt[k].sum() == 0:
+            k -= 1
+        cur_gt = cur_gt[:k + 1]
+
+        if cur_gt.shape[0] > 0:
+            if box_preds.shape[0] > 0:
+                iou3d_rcnn = iou3d_nms_utils.boxes_iou3d_gpu(box_preds[:, 0:7], cur_gt[:, 0:7])
+            else:
+                iou3d_rcnn = torch.zeros((0, cur_gt.shape[0]))
+
+            if rois is not None:
+                iou3d_roi = iou3d_nms_utils.boxes_iou3d_gpu(rois[:, 0:7], cur_gt[:, 0:7])
+
+            for cur_thresh in thresh_list:
+                if iou3d_rcnn.shape[0] == 0:
+                    precision_dict['rcnn_%s' % str(cur_thresh)] += 0
+                    precision_dict['fp_rcnn_%s' % str(cur_thresh)] += 0
+                else:
+                    rcnn_recalled = (iou3d_rcnn.max(dim=0)[0] > cur_thresh).sum().item()
+                    precision_dict['rcnn_%s' % str(cur_thresh)] += rcnn_recalled
+                    # Calculate false positives
+                    precision_dict['fp_rcnn_%s' % str(cur_thresh)] += max(0, box_preds_selected.shape[0])
+                if rois is not None:
+                    roi_recalled = (iou3d_roi.max(dim=0)[0] > cur_thresh).sum().item()
+                    precision_dict['roi_%s' % str(cur_thresh)] += roi_recalled
+                    
+                    # Calculate false positives for roi
+                    precision_dict['fp_roi_%s' % str(cur_thresh)] += max(0, box_preds.shape[0])
+
+
+            precision_dict['gt'] += cur_gt.shape[0]
+        else:
+            gt_iou = box_preds.new_zeros(box_preds.shape[0])
+        return precision_dict
 
     def _load_state_dict(self, model_state_disk, *, strict=True):
         state_dict = self.state_dict()  # local cache of state_dict

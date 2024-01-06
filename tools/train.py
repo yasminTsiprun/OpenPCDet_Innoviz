@@ -17,6 +17,14 @@ from pcdet.utils import common_utils
 from train_utils.optimization import build_optimizer, build_scheduler
 from train_utils.train_utils import train_model
 
+import datetime
+
+#from torch.utils import tensorboard
+#
+#import tensorflow as tf
+#from tensorboardX import SummaryWriter
+
+
 
 def parse_config():
     parser = argparse.ArgumentParser(description='arg parser')
@@ -29,12 +37,12 @@ def parse_config():
     parser.add_argument('--ckpt', type=str, default=None, help='checkpoint to start from')
     parser.add_argument('--pretrained_model', type=str, default=None, help='pretrained_model')
     parser.add_argument('--launcher', choices=['none', 'pytorch', 'slurm'], default='none')
-    parser.add_argument('--tcp_port', type=int, default=18888, help='tcp port for distrbuted training')
+    parser.add_argument('--tcp_port', type=int, default=80, help='tcp port for distrbuted training')
     parser.add_argument('--sync_bn', action='store_true', default=False, help='whether to use sync bn')
     parser.add_argument('--fix_random_seed', action='store_true', default=False, help='')
     parser.add_argument('--ckpt_save_interval', type=int, default=1, help='number of training epochs')
     parser.add_argument('--local_rank', type=int, default=0, help='local rank for distributed training')
-    parser.add_argument('--max_ckpt_save_num', type=int, default=30, help='max number of saved checkpoint')
+    parser.add_argument('--max_ckpt_save_num', type=int, default=80, help='max number of saved checkpoint')
     parser.add_argument('--merge_all_iters_to_one_epoch', action='store_true', default=False, help='')
     parser.add_argument('--set', dest='set_cfgs', default=None, nargs=argparse.REMAINDER,
                         help='set extra config keys if needed')
@@ -66,6 +74,33 @@ def parse_config():
 
 
 def main():
+    #tensorboard --logdir=.
+    #tensorboard --logdir=.
+    #cd /home/yasmin/Projects/OpenPCDet-master/output/custom_models/pv_rcnn/default/tensorboard
+    #tensorboard --logdir=.
+    #http://localhost:6006
+   # writer = SummaryWriter()
+    #log_folder = 'output/tesorboard'
+   # log_folder = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    #rm -rf log_folder
+    #os.mkdir(log_folder)
+   # tensorboard --logdir=runs\
+   # tensorboard --logdir=log_folder
+   
+    
+    # callbacks = [TensorBoard(log_dir=log_folder,
+    #                      histogram_freq=1,
+    #                      write_graph=True,
+    #                      write_images=True,
+    #                      update_freq='epoch',
+    #                      profile_batch=2,
+    #                      embeddings_freq=1)]
+    
+    # tensorboard -- logdir=log_folder
+
+
+   
+
     args, cfg = parse_config()
     if args.launcher == 'none':
         dist_train = False
@@ -77,7 +112,7 @@ def main():
         dist_train = True
 
     if args.batch_size is None:
-        args.batch_size = cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU
+        args.batch_size = 1 #YASMIN #cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU
     else:
         assert args.batch_size % total_gpus == 0, 'Batch size should match the number of gpus'
         args.batch_size = args.batch_size // total_gpus
@@ -110,7 +145,7 @@ def main():
     log_config_to_file(cfg, logger=logger)
     if cfg.LOCAL_RANK == 0:
         os.system('cp %s %s' % (args.cfg_file, output_dir))
-
+    log_dir=str(output_dir / 'tensorboard')
     tb_log = SummaryWriter(log_dir=str(output_dir / 'tensorboard')) if cfg.LOCAL_RANK == 0 else None
 
     logger.info("----------- Create dataloader & network & optimizer -----------")
@@ -167,6 +202,25 @@ def main():
         optimizer, total_iters_each_epoch=len(train_loader), total_epochs=args.epochs,
         last_epoch=last_epoch, optim_cfg=cfg.OPTIMIZATION
     )
+    
+    logger.info('**********************validation %s/%s(%s)**********************' %
+                (cfg.EXP_GROUP_PATH, cfg.TAG, args.extra_tag))
+    valid_set, valid_loader, sampler = build_dataloader(
+        dataset_cfg=cfg.DATA_CONFIG,
+        class_names=cfg.CLASS_NAMES,
+        batch_size=args.batch_size,
+        dist=dist_train, workers=args.workers, logger=logger, training=False
+    )
+    valid_output_dir = output_dir / 'valid' / 'valid_with_train'
+    valid_output_dir.mkdir(parents=True, exist_ok=True)
+    args.start_epoch = max(args.epochs - args.num_epochs_to_eval, 0)  # Only evaluate the last args.num_epochs_to_eval epochs
+#    args.start_epoch = 0 #yasmin
+    # repeat_eval_ckpt(
+    #     model.module if dist_train else model,
+    #     valid_loader, args, valid_output_dir, logger, ckpt_dir,model_func=model_fn_decorator(),
+    #     dist_test=dist_train
+    # )
+
 
     # -----------------------start training---------------------------
     logger.info('**********************Start training %s/%s(%s)**********************'
@@ -175,7 +229,7 @@ def main():
     train_model(
         model,
         optimizer,
-        train_loader,
+        train_loader,        
         model_func=model_fn_decorator(),
         lr_scheduler=lr_scheduler,
         optim_cfg=cfg.OPTIMIZATION,
@@ -216,15 +270,15 @@ def main():
     eval_output_dir = output_dir / 'eval' / 'eval_with_train'
     eval_output_dir.mkdir(parents=True, exist_ok=True)
     args.start_epoch = max(args.epochs - args.num_epochs_to_eval, 0)  # Only evaluate the last args.num_epochs_to_eval epochs
-
+#    args.start_epoch = 0 #yasmin
     repeat_eval_ckpt(
         model.module if dist_train else model,
-        test_loader, args, eval_output_dir, logger, ckpt_dir,
+        test_loader, args, eval_output_dir, logger, ckpt_dir,model_func=model_fn_decorator(),
         dist_test=dist_train
     )
     logger.info('**********************End evaluation %s/%s(%s)**********************' %
                 (cfg.EXP_GROUP_PATH, cfg.TAG, args.extra_tag))
-
+    
 
 if __name__ == '__main__':
     main()

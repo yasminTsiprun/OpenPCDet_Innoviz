@@ -9,17 +9,27 @@ from pcdet.models import load_data_to_gpu
 from pcdet.utils import common_utils
 
 
-def statistics_info(cfg, ret_dict, metric, disp_dict):
+def statistics_info(cfg, ret_dict, precision_dict, metric, disp_dict):
     for cur_thresh in cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST:
         metric['recall_roi_%s' % str(cur_thresh)] += ret_dict.get('roi_%s' % str(cur_thresh), 0)
         metric['recall_rcnn_%s' % str(cur_thresh)] += ret_dict.get('rcnn_%s' % str(cur_thresh), 0)
+        
+        metric['precision_roi_%s' % str(cur_thresh)] += precision_dict.get('roi_%s' % str(cur_thresh), 0)
+        metric['precision_rcnn_%s' % str(cur_thresh)] += precision_dict.get('rcnn_%s' % str(cur_thresh), 0)
+        metric['fp_roi_%s' % str(cur_thresh)] += precision_dict.get('fp_roi_%s' % str(cur_thresh), 0)
+        metric['fp_rcnn_%s' % str(cur_thresh)] += precision_dict.get('fp_rcnn_%s' % str(cur_thresh), 0)
+
     metric['gt_num'] += ret_dict.get('gt', 0)
     min_thresh = cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST[0]
     disp_dict['recall_%s' % str(min_thresh)] = \
         '(%d, %d) / %d' % (metric['recall_roi_%s' % str(min_thresh)], metric['recall_rcnn_%s' % str(min_thresh)], metric['gt_num'])
 
+    #Yasmin"
+    disp_dict['precision_%s' % str(min_thresh)] = \
+        '(%d / %d) (%d / %d)' % (metric['precision_roi_%s' % str(min_thresh)], metric['fp_roi_%s' % str(min_thresh)], metric['precision_rcnn_%s' % str(min_thresh)], metric['fp_rcnn_%s' % str(min_thresh)])
 
-def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=False, result_dir=None):
+
+def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, model_func, dist_test=False, result_dir=None):
     result_dir.mkdir(parents=True, exist_ok=True)
 
     final_output_dir = result_dir / 'final_result' / 'data'
@@ -29,9 +39,16 @@ def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=Fal
     metric = {
         'gt_num': 0,
     }
+    metric_p = {
+        'gt_num': 0,
+    }
     for cur_thresh in cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST:
         metric['recall_roi_%s' % str(cur_thresh)] = 0
         metric['recall_rcnn_%s' % str(cur_thresh)] = 0
+        metric['precision_roi_%s' % str(cur_thresh)] = 0
+        metric['precision_rcnn_%s' % str(cur_thresh)] = 0
+        metric['fp_roi_%s' % str(cur_thresh)] = 0
+        metric['fp_rcnn_%s' % str(cur_thresh)] = 0
 
     dataset = dataloader.dataset
     class_names = dataset.class_names
@@ -56,13 +73,20 @@ def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=Fal
         progress_bar = tqdm.tqdm(total=len(dataloader), leave=True, desc='eval', dynamic_ncols=True)
     start_time = time.time()
     for i, batch_dict in enumerate(dataloader):
+        if i == 10:
+            i = 10
+            
         load_data_to_gpu(batch_dict)
 
         if getattr(args, 'infer_time', False):
             start_time = time.time()
 
         with torch.no_grad():
-            pred_dicts, ret_dict = model(batch_dict)
+            pred_dicts, ret_dict, precision_dict = model(batch_dict) #yasmin add precision calculation
+            # loss =loss_fn(pred_dicts, ??)
+            # total_loss +=loss.item()
+            # num_samples +-len(inputs)
+            # loss = ret_dict['loss'].mean()
 
         disp_dict = {}
 
@@ -72,11 +96,15 @@ def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=Fal
             # use ms to measure inference time
             disp_dict['infer_time'] = f'{infer_time_meter.val:.2f}({infer_time_meter.avg:.2f})'
 
-        statistics_info(cfg, ret_dict, metric, disp_dict)
+        statistics_info(cfg, ret_dict, precision_dict, metric, disp_dict) #yasmin: 
+        #statistics_info(cfg, ret_dict, metric_p, disp_dict) #orig
+        
         annos = dataset.generate_prediction_dicts(
             batch_dict, pred_dicts, class_names,
             output_path=final_output_dir if args.save_to_file else None
         )
+        
+
         det_annos += annos
         if cfg.LOCAL_RANK == 0:
             progress_bar.set_postfix(disp_dict)
@@ -104,6 +132,14 @@ def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=Fal
                 metric[0][key] += metric[k][key]
         metric = metric[0]
 
+    
+    # ret_dict = {} #yasmin
+    # if dist_test:
+    #     for key, val in metric[0].items():
+    #         for k in range(1, world_size):
+    #             metric_p[0][key] += metric_p[k][key]
+    #     metric_p = metric_p[0]
+
     gt_num_cnt = metric['gt_num']
     for cur_thresh in cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST:
         cur_roi_recall = metric['recall_roi_%s' % str(cur_thresh)] / max(gt_num_cnt, 1)
@@ -112,6 +148,17 @@ def eval_one_epoch(cfg, args, model, dataloader, epoch_id, logger, dist_test=Fal
         logger.info('recall_rcnn_%s: %f' % (cur_thresh, cur_rcnn_recall))
         ret_dict['recall/roi_%s' % str(cur_thresh)] = cur_roi_recall
         ret_dict['recall/rcnn_%s' % str(cur_thresh)] = cur_rcnn_recall
+
+        # Yasmin: precision
+        cur_roi_fp = metric['fp_roi_%s' % str(cur_thresh)]
+        cur_roi_precision = metric['precision_roi_%s' % str(cur_thresh)] / max(cur_roi_fp, 1)
+        cur_rcnn_fp = metric['fp_rcnn_%s' % str(cur_thresh)]
+        cur_rcnn_precision = metric['precision_rcnn_%s' % str(cur_thresh)] / max(cur_rcnn_fp, 1)
+   
+        logger.info('precision_roi_%s: %f' % (cur_thresh, cur_roi_precision))
+        logger.info('precision_rcnn_%s: %f' % (cur_thresh, cur_rcnn_precision))
+        ret_dict['precision/roi_%s' % str(cur_thresh)] = cur_roi_precision
+        ret_dict['precision/rcnn_%s' % str(cur_thresh)] = cur_rcnn_precision
 
     total_pred_objects = 0
     for anno in det_annos:

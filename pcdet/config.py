@@ -50,6 +50,8 @@ def cfg_from_list(cfg_list, config):
 
 def merge_new_config(config, new_config):
     if '_BASE_CONFIG_' in new_config:
+        import os
+        mydir = os. getcwd() 
         with open(new_config['_BASE_CONFIG_'], 'r') as f:
             try:
                 yaml_config = yaml.safe_load(f, Loader=yaml.FullLoader)

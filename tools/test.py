@@ -14,7 +14,7 @@ from tensorboardX import SummaryWriter
 from eval_utils import eval_utils
 from pcdet.config import cfg, cfg_from_list, cfg_from_yaml_file, log_config_to_file
 from pcdet.datasets import build_dataloader
-from pcdet.models import build_network
+from pcdet.models import build_network, model_fn_decorator
 from pcdet.utils import common_utils
 
 
@@ -55,15 +55,15 @@ def parse_config():
     return args, cfg
 
 
-def eval_single_ckpt(model, test_loader, args, eval_output_dir, logger, epoch_id, dist_test=False):
+def eval_single_ckpt(model, test_loader, args, eval_output_dir, logger, epoch_id, model_func, dist_test=False):
     # load checkpoint
-    model.load_params_from_file(filename=args.ckpt, logger=logger, to_cpu=dist_test, 
+    model.load_params_from_file(filename=args.ckpt, logger=logger, to_cpu=dist_test,
                                 pre_trained_path=args.pretrained_model)
     model.cuda()
     
     # start evaluation
     eval_utils.eval_one_epoch(
-        cfg, args, model, test_loader, epoch_id, logger, dist_test=dist_test,
+        cfg, args, model, test_loader, epoch_id, logger, model_func, dist_test=dist_test,
         result_dir=eval_output_dir
     )
 
@@ -86,7 +86,7 @@ def get_no_evaluated_ckpt(ckpt_dir, ckpt_record_file, args):
     return -1, None
 
 
-def repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir, dist_test=False):
+def repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir, model_func, dist_test=False):
     # evaluated ckpt record
     ckpt_record_file = eval_output_dir / ('eval_list_%s.txt' % cfg.DATA_CONFIG.DATA_SPLIT['test'])
     with open(ckpt_record_file, 'a'):
@@ -121,7 +121,7 @@ def repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir
         # start evaluation
         cur_result_dir = eval_output_dir / ('epoch_%s' % cur_epoch_id) / cfg.DATA_CONFIG.DATA_SPLIT['test']
         tb_dict = eval_utils.eval_one_epoch(
-            cfg, args, model, test_loader, cur_epoch_id, logger, dist_test=dist_test,
+            cfg, args, model, test_loader, cur_epoch_id, logger, model_func, dist_test=dist_test,
             result_dir=cur_result_dir
         )
 
@@ -198,9 +198,9 @@ def main():
     model = build_network(model_cfg=cfg.MODEL, num_class=len(cfg.CLASS_NAMES), dataset=test_set)
     with torch.no_grad():
         if args.eval_all:
-            repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir, dist_test=dist_test)
+            repeat_eval_ckpt(model, test_loader, args, eval_output_dir, logger, ckpt_dir, model_func=model_fn_decorator(),  dist_test=dist_test)
         else:
-            eval_single_ckpt(model, test_loader, args, eval_output_dir, logger, epoch_id, dist_test=dist_test)
+            eval_single_ckpt(model, test_loader, args, eval_output_dir, logger, epoch_id, model_func=model_fn_decorator(), dist_test=dist_test)
 
 
 if __name__ == '__main__':

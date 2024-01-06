@@ -9,7 +9,7 @@ import SharedArray
 import torch.distributed as dist
 
 from ...ops.iou3d_nms import iou3d_nms_utils
-from ...utils import box_utils, common_utils, calibration_kitti
+from ...utils import box_utils, calibration_Innoviz, common_utils
 from pcdet.datasets.kitti.kitti_object_eval_python import kitti_common
 
 class DataBaseSampler(object):
@@ -235,7 +235,7 @@ class DataBaseSampler(object):
 
     def collect_image_crops_kitti(self, info, data_dict, obj_points, sampled_gt_boxes, sampled_gt_boxes2d, idx):
         calib_file = kitti_common.get_calib_path(int(info['image_idx']), self.root_path, relative_path=False)
-        sampled_calib = calibration_kitti.Calibration(calib_file)
+        sampled_calib = calibration_Innoviz.Calibration(calib_file)
         points_2d, depth_2d = sampled_calib.lidar_to_img(obj_points[:,:3])
 
         if True:  # self.point_refine:

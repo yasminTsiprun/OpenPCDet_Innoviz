@@ -1,0 +1,509 @@
+2023-12-30 17:25:32,841   INFO  **********************Start logging**********************
+2023-12-30 17:25:32,841   INFO  CUDA_VISIBLE_DEVICES=ALL
+2023-12-30 17:25:32,841   INFO  Training with a single process
+2023-12-30 17:25:32,841   INFO  cfg_file         cfgs/custom_models/pv_rcnn.yaml
+2023-12-30 17:25:32,841   INFO  batch_size       1
+2023-12-30 17:25:32,841   INFO  epochs           80
+2023-12-30 17:25:32,841   INFO  workers          4
+2023-12-30 17:25:32,841   INFO  extra_tag        default
+2023-12-30 17:25:32,841   INFO  ckpt             None
+2023-12-30 17:25:32,841   INFO  pretrained_model None
+2023-12-30 17:25:32,841   INFO  launcher         none
+2023-12-30 17:25:32,841   INFO  tcp_port         80
+2023-12-30 17:25:32,841   INFO  sync_bn          False
+2023-12-30 17:25:32,841   INFO  fix_random_seed  False
+2023-12-30 17:25:32,841   INFO  ckpt_save_interval 1
+2023-12-30 17:25:32,841   INFO  local_rank       0
+2023-12-30 17:25:32,841   INFO  max_ckpt_save_num 80
+2023-12-30 17:25:32,842   INFO  merge_all_iters_to_one_epoch False
+2023-12-30 17:25:32,842   INFO  set_cfgs         None
+2023-12-30 17:25:32,842   INFO  max_waiting_mins 0
+2023-12-30 17:25:32,842   INFO  start_epoch      0
+2023-12-30 17:25:32,842   INFO  num_epochs_to_eval 0
+2023-12-30 17:25:32,842   INFO  save_to_file     False
+2023-12-30 17:25:32,842   INFO  use_tqdm_to_record False
+2023-12-30 17:25:32,842   INFO  logger_iter_interval 50
+2023-12-30 17:25:32,842   INFO  ckpt_save_time_interval 300
+2023-12-30 17:25:32,842   INFO  wo_gpu_stat      False
+2023-12-30 17:25:32,842   INFO  use_amp          False
+2023-12-30 17:25:32,842   INFO  cfg.ROOT_DIR: /home/eeproj6/Yasmin/OpenPCDet-master_New
+2023-12-30 17:25:32,842   INFO  cfg.LOCAL_RANK: 0
+2023-12-30 17:25:32,842   INFO  cfg.CLASS_NAMES: ['car']
+2023-12-30 17:25:32,842   INFO  ----------- DATA_CONFIG -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATASET: CustomDataset
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATA_PATH: ../data/custom
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.POINT_CLOUD_RANGE: [-75.2, -75.2, -2, 75.2, 75.2, 4]
+2023-12-30 17:25:32,842   INFO  ----------- MAP_CLASS_TO_KITTI -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.MAP_CLASS_TO_KITTI.car: Car
+2023-12-30 17:25:32,842   INFO  ----------- DATA_SPLIT -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATA_SPLIT.train: train
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATA_SPLIT.test: val
+2023-12-30 17:25:32,842   INFO  ----------- INFO_PATH -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.INFO_PATH.train: ['custom_infos_train.pkl']
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.INFO_PATH.test: ['custom_infos_val.pkl']
+2023-12-30 17:25:32,842   INFO  ----------- POINT_FEATURE_ENCODING -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.encoding_type: absolute_coordinates_encoding
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.used_feature_list: ['x', 'y', 'z', 'intensity']
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.src_feature_list: ['x', 'y', 'z', 'intensity']
+2023-12-30 17:25:32,842   INFO  ----------- DATA_AUGMENTOR -----------
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.DISABLE_AUG_LIST: ['placeholder']
+2023-12-30 17:25:32,842   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.AUG_CONFIG_LIST: [{'NAME': 'gt_sampling', 'USE_ROAD_PLANE': False, 'DB_INFO_PATH': ['custom_dbinfos_train.pkl'], 'PREPARE': {'filter_by_min_points': ['car:5', 'Pedestrian:5', 'Cyclist:5']}, 'SAMPLE_GROUPS': ['car:20', 'Pedestrian:15', 'Cyclist:15'], 'NUM_POINT_FEATURES': 4, 'DATABASE_WITH_FAKELIDAR': False, 'REMOVE_EXTRA_WIDTH': [0.0, 0.0, 0.0], 'LIMIT_WHOLE_SCENE': True}, {'NAME': 'random_world_flip', 'ALONG_AXIS_LIST': ['x', 'y']}, {'NAME': 'random_world_rotation', 'WORLD_ROT_ANGLE': [-0.78539816, 0.78539816]}, {'NAME': 'random_world_scaling', 'WORLD_SCALE_RANGE': [0.95, 1.05]}]
+2023-12-30 17:25:32,843   INFO  cfg.DATA_CONFIG.DATA_PROCESSOR: [{'NAME': 'mask_points_and_boxes_outside_range', 'REMOVE_OUTSIDE_BOXES': True}, {'NAME': 'shuffle_points', 'SHUFFLE_ENABLED': {'train': True, 'test': False}}, {'NAME': 'transform_points_to_voxels', 'VOXEL_SIZE': [0.1, 0.1, 0.15], 'MAX_POINTS_PER_VOXEL': 5, 'MAX_NUMBER_OF_VOXELS': {'train': 150000, 'test': 150000}}]
+2023-12-30 17:25:32,843   INFO  cfg.DATA_CONFIG._BASE_CONFIG_: cfgs/dataset_configs/custom_dataset.yaml
+2023-12-30 17:25:32,843   INFO  ----------- MODEL -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.NAME: PVRCNN
+2023-12-30 17:25:32,843   INFO  ----------- VFE -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.VFE.NAME: MeanVFE
+2023-12-30 17:25:32,843   INFO  ----------- BACKBONE_3D -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_3D.NAME: VoxelBackBone8x
+2023-12-30 17:25:32,843   INFO  ----------- MAP_TO_BEV -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.MAP_TO_BEV.NAME: HeightCompression
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.MAP_TO_BEV.NUM_BEV_FEATURES: 256
+2023-12-30 17:25:32,843   INFO  ----------- BACKBONE_2D -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.NAME: BaseBEVBackbone
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.LAYER_NUMS: [5, 5]
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.LAYER_STRIDES: [1, 2]
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.NUM_FILTERS: [128, 256]
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.UPSAMPLE_STRIDES: [1, 2]
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.BACKBONE_2D.NUM_UPSAMPLE_FILTERS: [256, 256]
+2023-12-30 17:25:32,843   INFO  ----------- DENSE_HEAD -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.NAME: AnchorHeadSingle
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.CLASS_AGNOSTIC: False
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.USE_DIRECTION_CLASSIFIER: True
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.DIR_OFFSET: 0.78539
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.DIR_LIMIT_OFFSET: 0.0
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.NUM_DIR_BINS: 2
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.ANCHOR_GENERATOR_CONFIG: [{'class_name': 'car', 'anchor_sizes': [[3.9, 1.6, 1.56]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [0], 'align_center': False, 'feature_map_stride': 8, 'matched_threshold': 0.55, 'unmatched_threshold': 0.4}, {'class_name': 'Pedestrian', 'anchor_sizes': [[0.8, 0.6, 1.73]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [0], 'align_center': False, 'feature_map_stride': 8, 'matched_threshold': 0.5, 'unmatched_threshold': 0.35}, {'class_name': 'Cyclist', 'anchor_sizes': [[1.76, 0.6, 1.73]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [0], 'align_center': False, 'feature_map_stride': 8, 'matched_threshold': 0.5, 'unmatched_threshold': 0.35}]
+2023-12-30 17:25:32,843   INFO  ----------- TARGET_ASSIGNER_CONFIG -----------
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NAME: AxisAlignedTargetAssigner
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.POS_FRACTION: -1.0
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.SAMPLE_SIZE: 512
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NORM_BY_NUM_EXAMPLES: False
+2023-12-30 17:25:32,843   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.MATCH_HEIGHT: False
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.BOX_CODER: ResidualCoder
+2023-12-30 17:25:32,844   INFO  ----------- LOSS_CONFIG -----------
+2023-12-30 17:25:32,844   INFO  ----------- LOSS_WEIGHTS -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.cls_weight: 1.0
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.loc_weight: 2.0
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.dir_weight: 0.2
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.code_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2023-12-30 17:25:32,844   INFO  ----------- PFE -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.NAME: VoxelSetAbstraction
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.POINT_SOURCE: raw_points
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.NUM_KEYPOINTS: 4096
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.NUM_OUTPUT_FEATURES: 128
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SAMPLE_METHOD: FPS
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.FEATURES_SOURCE: ['bev', 'x_conv3', 'x_conv4', 'raw_points']
+2023-12-30 17:25:32,844   INFO  ----------- SA_LAYER -----------
+2023-12-30 17:25:32,844   INFO  ----------- raw_points -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.raw_points.MLPS: [[16, 16], [16, 16]]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.raw_points.POOL_RADIUS: [0.4, 0.8]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.raw_points.NSAMPLE: [16, 16]
+2023-12-30 17:25:32,844   INFO  ----------- x_conv1 -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv1.DOWNSAMPLE_FACTOR: 1
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv1.MLPS: [[16, 16], [16, 16]]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv1.POOL_RADIUS: [0.4, 0.8]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv1.NSAMPLE: [16, 16]
+2023-12-30 17:25:32,844   INFO  ----------- x_conv2 -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv2.DOWNSAMPLE_FACTOR: 2
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv2.MLPS: [[32, 32], [32, 32]]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv2.POOL_RADIUS: [0.8, 1.2]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv2.NSAMPLE: [16, 32]
+2023-12-30 17:25:32,844   INFO  ----------- x_conv3 -----------
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv3.DOWNSAMPLE_FACTOR: 4
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv3.MLPS: [[64, 64], [64, 64]]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv3.POOL_RADIUS: [1.2, 2.4]
+2023-12-30 17:25:32,844   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv3.NSAMPLE: [16, 32]
+2023-12-30 17:25:32,845   INFO  ----------- x_conv4 -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv4.DOWNSAMPLE_FACTOR: 8
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv4.MLPS: [[64, 64], [64, 64]]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv4.POOL_RADIUS: [2.4, 4.8]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.PFE.SA_LAYER.x_conv4.NSAMPLE: [16, 32]
+2023-12-30 17:25:32,845   INFO  ----------- POINT_HEAD -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.NAME: PointHeadSimple
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.CLS_FC: [256, 256]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.CLASS_AGNOSTIC: True
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.USE_POINT_FEATURES_BEFORE_FUSION: True
+2023-12-30 17:25:32,845   INFO  ----------- TARGET_CONFIG -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.TARGET_CONFIG.GT_EXTRA_WIDTH: [0.2, 0.2, 0.2]
+2023-12-30 17:25:32,845   INFO  ----------- LOSS_CONFIG -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.LOSS_CONFIG.LOSS_REG: smooth-l1
+2023-12-30 17:25:32,845   INFO  ----------- LOSS_WEIGHTS -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.POINT_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.point_cls_weight: 1.0
+2023-12-30 17:25:32,845   INFO  ----------- ROI_HEAD -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NAME: PVRCNNHead
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.CLASS_AGNOSTIC: True
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.SHARED_FC: [256, 256]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.CLS_FC: [256, 256]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.REG_FC: [256, 256]
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.DP_RATIO: 0.3
+2023-12-30 17:25:32,845   INFO  ----------- NMS_CONFIG -----------
+2023-12-30 17:25:32,845   INFO  ----------- TRAIN -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TRAIN.NMS_TYPE: nms_gpu
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TRAIN.MULTI_CLASSES_NMS: False
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TRAIN.NMS_PRE_MAXSIZE: 9000
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TRAIN.NMS_POST_MAXSIZE: 512
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TRAIN.NMS_THRESH: 0.8
+2023-12-30 17:25:32,845   INFO  ----------- TEST -----------
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TEST.NMS_TYPE: nms_gpu
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TEST.MULTI_CLASSES_NMS: False
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TEST.NMS_PRE_MAXSIZE: 4096
+2023-12-30 17:25:32,845   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TEST.NMS_POST_MAXSIZE: 300
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.NMS_CONFIG.TEST.NMS_THRESH: 0.85
+2023-12-30 17:25:32,846   INFO  ----------- ROI_GRID_POOL -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.ROI_GRID_POOL.GRID_SIZE: 6
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.ROI_GRID_POOL.MLPS: [[64, 64], [64, 64]]
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.ROI_GRID_POOL.POOL_RADIUS: [0.8, 1.6]
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.ROI_GRID_POOL.NSAMPLE: [16, 16]
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.ROI_GRID_POOL.POOL_METHOD: max_pool
+2023-12-30 17:25:32,846   INFO  ----------- TARGET_CONFIG -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.BOX_CODER: ResidualCoder
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.ROI_PER_IMAGE: 128
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.FG_RATIO: 0.5
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.SAMPLE_ROI_BY_EACH_CLASS: True
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.CLS_SCORE_TYPE: roi_iou
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.CLS_FG_THRESH: 0.75
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.CLS_BG_THRESH: 0.25
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.CLS_BG_THRESH_LO: 0.1
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.HARD_BG_RATIO: 0.8
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.TARGET_CONFIG.REG_FG_THRESH: 0.55
+2023-12-30 17:25:32,846   INFO  ----------- LOSS_CONFIG -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.CLS_LOSS: BinaryCrossEntropy
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.REG_LOSS: smooth-l1
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.CORNER_LOSS_REGULARIZATION: True
+2023-12-30 17:25:32,846   INFO  ----------- LOSS_WEIGHTS -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.rcnn_cls_weight: 1.0
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.rcnn_reg_weight: 1.0
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.rcnn_corner_weight: 1.0
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.ROI_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.code_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2023-12-30 17:25:32,846   INFO  ----------- POST_PROCESSING -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.SCORE_THRESH: 0.1
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.OUTPUT_RAW_SCORE: False
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.EVAL_METRIC: kitti
+2023-12-30 17:25:32,846   INFO  ----------- NMS_CONFIG -----------
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.MULTI_CLASSES_NMS: False
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_TYPE: nms_gpu
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_THRESH: 0.1
+2023-12-30 17:25:32,846   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_PRE_MAXSIZE: 4096
+2023-12-30 17:25:32,847   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_POST_MAXSIZE: 500
+2023-12-30 17:25:32,847   INFO  ----------- OPTIMIZATION -----------
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU: 2
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.NUM_EPOCHS: 80
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.OPTIMIZER: adam_onecycle
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.LR: 0.01
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.WEIGHT_DECAY: 0.01
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.MOMENTUM: 0.9
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.MOMS: [0.95, 0.85]
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.PCT_START: 0.4
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.DIV_FACTOR: 10
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.DECAY_STEP_LIST: [35, 45]
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.LR_DECAY: 0.1
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.LR_CLIP: 1e-07
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.LR_WARMUP: False
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.WARMUP_EPOCH: 1
+2023-12-30 17:25:32,847   INFO  cfg.OPTIMIZATION.GRAD_NORM_CLIP: 10
+2023-12-30 17:25:32,847   INFO  cfg.TAG: pv_rcnn
+2023-12-30 17:25:32,847   INFO  cfg.EXP_GROUP_PATH: custom_models
+2023-12-30 17:25:32,854   INFO  ----------- Create dataloader & network & optimizer -----------
+2023-12-30 17:25:32,861   INFO  Database filter by min points car: 2236 => 2236
+2023-12-30 17:25:32,861   INFO  Loading Custom dataset.
+2023-12-30 17:25:32,862   INFO  Total samples for CUSTOM dataset: 256
+2023-12-30 17:25:33,195   INFO  ==> Loading parameters from checkpoint /home/eeproj6/Yasmin/OpenPCDet-master_New/output/custom_models/pv_rcnn/default/ckpt/checkpoint_epoch_80.pth to GPU
+2023-12-30 17:25:33,289   INFO  ==> Loading optimizer parameters from checkpoint /home/eeproj6/Yasmin/OpenPCDet-master_New/output/custom_models/pv_rcnn/default/ckpt/checkpoint_epoch_80.pth to GPU
+2023-12-30 17:25:33,290   INFO  ==> Done
+2023-12-30 17:25:33,292   INFO  ----------- Model PVRCNN created, param count: 13066885 -----------
+2023-12-30 17:25:33,292   INFO  PVRCNN(
+  (vfe): MeanVFE()
+  (backbone_3d): VoxelBackBone8x(
+    (conv_input): SparseSequential(
+      (0): SubMConv3d(4, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+      (1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+    (conv1): SparseSequential(
+      (0): SparseSequential(
+        (0): SubMConv3d(16, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (conv2): SparseSequential(
+      (0): SparseSequential(
+        (0): SparseConv3d(16, 32, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): SparseSequential(
+        (0): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): SparseSequential(
+        (0): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (conv3): SparseSequential(
+      (0): SparseSequential(
+        (0): SparseConv3d(32, 64, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): SparseSequential(
+        (0): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): SparseSequential(
+        (0): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (conv4): SparseSequential(
+      (0): SparseSequential(
+        (0): SparseConv3d(64, 64, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[0, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): SparseSequential(
+        (0): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): SparseSequential(
+        (0): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (conv_out): SparseSequential(
+      (0): SparseConv3d(64, 128, kernel_size=[3, 1, 1], stride=[2, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+      (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+  )
+  (map_to_bev_module): HeightCompression()
+  (pfe): VoxelSetAbstraction(
+    (SA_layers): ModuleList(
+      (0-1): 2 x StackSAModuleMSG(
+        (groupers): ModuleList(
+          (0-1): 2 x QueryAndGroup()
+        )
+        (mlps): ModuleList(
+          (0-1): 2 x Sequential(
+            (0): Conv2d(67, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU()
+            (3): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (5): ReLU()
+          )
+        )
+      )
+    )
+    (SA_rawpoints): StackSAModuleMSG(
+      (groupers): ModuleList(
+        (0-1): 2 x QueryAndGroup()
+      )
+      (mlps): ModuleList(
+        (0-1): 2 x Sequential(
+          (0): Conv2d(4, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (4): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (5): ReLU()
+        )
+      )
+    )
+    (vsa_point_feature_fusion): Sequential(
+      (0): Linear(in_features=544, out_features=128, bias=False)
+      (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+    )
+  )
+  (backbone_2d): BaseBEVBackbone(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+      (1): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(256, 256, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+  )
+  (dense_head): AnchorHeadSingle(
+    (cls_loss_func): SigmoidFocalClassificationLoss()
+    (reg_loss_func): WeightedSmoothL1Loss()
+    (dir_loss_func): WeightedCrossEntropyLoss()
+    (conv_cls): Conv2d(512, 6, kernel_size=(1, 1), stride=(1, 1))
+    (conv_box): Conv2d(512, 42, kernel_size=(1, 1), stride=(1, 1))
+    (conv_dir_cls): Conv2d(512, 12, kernel_size=(1, 1), stride=(1, 1))
+  )
+  (point_head): PointHeadSimple(
+    (cls_loss_func): SigmoidFocalClassificationLoss()
+    (cls_layers): Sequential(
+      (0): Linear(in_features=544, out_features=256, bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): Linear(in_features=256, out_features=256, bias=False)
+      (4): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): Linear(in_features=256, out_features=1, bias=True)
+    )
+  )
+  (roi_head): PVRCNNHead(
+    (proposal_target_layer): ProposalTargetLayer()
+    (reg_loss_func): WeightedSmoothL1Loss()
+    (roi_grid_pool_layer): StackSAModuleMSG(
+      (groupers): ModuleList(
+        (0-1): 2 x QueryAndGroup()
+      )
+      (mlps): ModuleList(
+        (0-1): 2 x Sequential(
+          (0): Conv2d(131, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (2): ReLU()
+          (3): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (5): ReLU()
+        )
+      )
+    )
+    (shared_fc_layer): Sequential(
+      (0): Conv1d(27648, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): Dropout(p=0.3, inplace=False)
+      (4): Conv1d(256, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (5): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (6): ReLU()
+    )
+    (cls_layers): Sequential(
+      (0): Conv1d(256, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): Dropout(p=0.3, inplace=False)
+      (4): Conv1d(256, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (5): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (6): ReLU()
+      (7): Conv1d(256, 1, kernel_size=(1,), stride=(1,))
+    )
+    (reg_layers): Sequential(
+      (0): Conv1d(256, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): Dropout(p=0.3, inplace=False)
+      (4): Conv1d(256, 256, kernel_size=(1,), stride=(1,), bias=False)
+      (5): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (6): ReLU()
+      (7): Conv1d(256, 7, kernel_size=(1,), stride=(1,))
+    )
+  )
+)
+2023-12-30 17:25:33,294   INFO  **********************validation custom_models/pv_rcnn(default)**********************
+2023-12-30 17:25:33,294   INFO  Loading Custom dataset.
+2023-12-30 17:25:33,295   INFO  Total samples for CUSTOM dataset: 51
+2023-12-30 17:25:33,295   INFO  **********************Start training custom_models/pv_rcnn(default)**********************
+2023-12-30 17:25:33,762   INFO  **********************End training custom_models/pv_rcnn(default)**********************
+
+
+
+2023-12-30 17:25:33,762   INFO  **********************Start evaluation custom_models/pv_rcnn(default)**********************
+2023-12-30 17:25:33,763   INFO  Loading Custom dataset.
+2023-12-30 17:25:33,763   INFO  Total samples for CUSTOM dataset: 51
+2023-12-30 17:25:33,768   INFO  ==> Loading parameters from checkpoint /home/eeproj6/Yasmin/OpenPCDet-master_New/output/custom_models/pv_rcnn/default/ckpt/checkpoint_epoch_80.pth to GPU
+2023-12-30 17:25:33,888   INFO  ==> Checkpoint trained from version: pcdet+0.6.0+0000000
+2023-12-30 17:25:33,896   INFO  ==> Done (loaded 319/319)
+2023-12-30 17:25:33,899   INFO  *************** EPOCH 80 EVALUATION *****************
+2023-12-30 17:25:50,872   INFO  *************** Performance of EPOCH 80 *****************
+2023-12-30 17:25:50,872   INFO  Generate label finished(sec_per_example: 0.3328 second).
+2023-12-30 17:25:50,872   INFO  recall_roi_0.3: 0.997778
+2023-12-30 17:25:50,872   INFO  recall_rcnn_0.3: 0.997778
+2023-12-30 17:25:50,873   INFO  precision_roi_0.3: 0.937370
+2023-12-30 17:25:50,873   INFO  precision_rcnn_0.3: 0.935282
+2023-12-30 17:25:50,873   INFO  recall_roi_0.5: 0.988889
+2023-12-30 17:25:50,873   INFO  recall_rcnn_0.5: 0.986667
+2023-12-30 17:25:50,873   INFO  precision_roi_0.5: 0.929019
+2023-12-30 17:25:50,873   INFO  precision_rcnn_0.5: 0.903967
+2023-12-30 17:25:50,873   INFO  recall_roi_0.7: 0.873333
+2023-12-30 17:25:50,873   INFO  recall_rcnn_0.7: 0.897778
+2023-12-30 17:25:50,873   INFO  precision_roi_0.7: 0.820459
+2023-12-30 17:25:50,873   INFO  precision_rcnn_0.7: 0.778706
+2023-12-30 17:25:50,874   INFO  Average predicted number of objects(51 samples): 9.392
+2023-12-30 17:25:56,549   INFO  Car AP@0.70, 0.70, 0.70:
+bbox AP:99.5307, 99.5307, 99.5307
+bev  AP:88.5396, 88.5396, 88.5396
+3d   AP:78.6977, 78.6977, 78.6977
+aos  AP:73.84, 73.84, 73.84
+Car AP_R40@0.70, 0.70, 0.70:
+bbox AP:99.7137, 99.7137, 99.7137
+bev  AP:87.8886, 87.8886, 87.8886
+3d   AP:79.3159, 79.3159, 79.3159
+aos  AP:73.14, 73.14, 73.14
+Car AP@0.70, 0.50, 0.50:
+bbox AP:99.5307, 99.5307, 99.5307
+bev  AP:90.0948, 90.0948, 90.0948
+3d   AP:89.9228, 89.9228, 89.9228
+aos  AP:73.84, 73.84, 73.84
+Car AP_R40@0.70, 0.50, 0.50:
+bbox AP:99.7137, 99.7137, 99.7137
+bev  AP:96.3950, 96.3950, 96.3950
+3d   AP:93.7582, 93.7582, 93.7582
+aos  AP:73.14, 73.14, 73.14
+
+2023-12-30 17:25:56,549   INFO  Result is saved to /home/eeproj6/Yasmin/OpenPCDet-master_New/output/custom_models/pv_rcnn/default/eval/eval_with_train/epoch_80/val
+2023-12-30 17:25:56,550   INFO  ****************Evaluation done.*****************
+2023-12-30 17:25:56,554   INFO  Epoch 80 has been evaluated
+2023-12-30 17:26:26,583   INFO  **********************End evaluation custom_models/pv_rcnn(default)**********************

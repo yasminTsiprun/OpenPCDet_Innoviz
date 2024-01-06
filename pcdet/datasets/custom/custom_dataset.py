@@ -4,10 +4,9 @@ import os
 
 import numpy as np
 
-from ...ops.roiaware_pool3d import roiaware_pool3d_utils
-from ...utils import box_utils, common_utils
-from ..dataset import DatasetTemplate
-
+from pcdet.ops.roiaware_pool3d import roiaware_pool3d_utils
+from pcdet.utils import box_utils, common_utils
+from pcdet.datasets.dataset import DatasetTemplate
 
 class CustomDataset(DatasetTemplate):
     def __init__(self, dataset_cfg, class_names, training=True, root_path=None, logger=None):
@@ -257,7 +256,7 @@ def create_custom_infos(dataset_cfg, class_names, data_path, save_path, workers=
     )
     with open(val_filename, 'wb') as f:
         pickle.dump(custom_infos_val, f)
-    print('Custom info train file is saved to %s' % val_filename)
+    print('Custom info valid file is saved to %s' % val_filename)
 
     print('------------------------Start create groundtruth database for data augmentation------------------------')
     dataset.set_split(train_split)
@@ -267,7 +266,7 @@ def create_custom_infos(dataset_cfg, class_names, data_path, save_path, workers=
 
 if __name__ == '__main__':
     import sys
-
+    print ("args: ",sys.argv)
     if sys.argv.__len__() > 1 and sys.argv[1] == 'create_custom_infos':
         import yaml
         from pathlib import Path
@@ -277,7 +276,8 @@ if __name__ == '__main__':
         ROOT_DIR = (Path(__file__).resolve().parent / '../../../').resolve()
         create_custom_infos(
             dataset_cfg=dataset_cfg,
-            class_names=['Vehicle', 'Pedestrian', 'Cyclist'],
+            #class_names=['Vehicle', 'Pedestrian', 'Cyclist'],
+            class_names=['car'], #Yasmin
             data_path=ROOT_DIR / 'data' / 'custom',
             save_path=ROOT_DIR / 'data' / 'custom',
         )

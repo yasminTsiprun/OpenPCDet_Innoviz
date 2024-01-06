@@ -18,8 +18,14 @@ class PVRCNN(Detector3DTemplate):
             }
             return ret_dict, tb_dict, disp_dict
         else:
-            pred_dicts, recall_dicts = self.post_processing(batch_dict)
-            return pred_dicts, recall_dicts
+            # loss, tb_dict, disp_dict = self.get_training_loss()
+            # ret_dict = {
+            #     'loss': loss
+            # }
+            #pred_dicts, recall_dicts = self.post_processing(batch_dict)
+            pred_dicts, recall_dicts, precision_dict = self.post_processing(batch_dict) #yasmin add precision calculation
+            #return ret_dict, tb_dict, disp_dict, pred_dicts, recall_dicts #yasmin add precision calculation
+            return pred_dicts, recall_dicts, precision_dict
 
     def get_training_loss(self):
         disp_dict = {}
